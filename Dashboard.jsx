@@ -569,7 +569,9 @@
             <MenuItem>
                 <IconButton 
                     aria-label = "refresh of currunt page" 
-                    color = "black">
+                    color = "black" 
+                    type = "submit"
+                    aria-label = "search" >
                       <RefreshIcon />
                 </IconButton>
                 <p> Refresh </p>
@@ -708,27 +710,31 @@
                   <SettingIcon />
             </IconButton> 
             
-            <Popper open = {open} anchorEl = {anchorRef.current} role = {undefined} transition disablePortal>
-              {({ TransitionProps, placement }) => (
-              < Grow
-              {...TransitionProps}
-              style = {{ transformOrigin : placement === 'bottom' ? 'center top' : 'center bottom' }}
-            >
-              <Paper >
-                <ClickAwayListener onClickAway = {handlePopperClose}>
-                  <MenuList autoFocusItem = {openPopper} id = "menu-list-grow" onKeyDown={handleListKeyDown}>
-                    <MenuItem onClick = {handlePopperClose}> Settings </MenuItem>
-                    <MenuItem onClick = {handlePopperClose}> Enable dark theme </MenuItem>
-                    <MenuItem onClick = {handlePopperClose}> send feedback </MenuItem>
-                    <MenuItem onClick = {handlePopperClose}> Help </MenuItem>
-                    <MenuItem onClick = {handlePopperClose}> App downloads </MenuItem>
-                    <MenuItem onClick = {handlePopperClose}> Keyboard stortcuts </MenuItem>
-                  </MenuList>
-                </ClickAwayListener>
-              </Paper>
-            </Grow>
-          )}
-        </Popper>
+            <Popper 
+                open = {open} 
+                anchorEl = {anchorRef.current} 
+                role = {undefined} transition disablePortal
+                >
+                  {({ TransitionProps, placement }) => (
+                  < Grow
+                  {...TransitionProps}
+                  style = {{ transformOrigin : placement === 'bottom' ? 'center top' : 'center bottom' }}
+                  >
+                      <Paper >
+                        <ClickAwayListener onClickAway = {handlePopperClose}>
+                          <MenuList autoFocusItem = {openPopper} id = "menu-list-grow" onKeyDown={handleListKeyDown}>
+                            <MenuItem onClick = {handlePopperClose}> Settings </MenuItem>
+                            <MenuItem onClick = {handlePopperClose}> Enable dark theme </MenuItem>
+                            <MenuItem onClick = {handlePopperClose}> send feedback </MenuItem>
+                            <MenuItem onClick = {handlePopperClose}> Help </MenuItem>
+                            <MenuItem onClick = {handlePopperClose}> App downloads </MenuItem>
+                            <MenuItem onClick = {handlePopperClose}> Keyboard stortcuts </MenuItem>
+                          </MenuList>
+                        </ClickAwayListener>
+                      </Paper>
+                    </Grow>
+                  )}
+              </Popper>
 
             <IconButton
               // edge = "end"

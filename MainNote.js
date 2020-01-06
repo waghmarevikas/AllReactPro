@@ -1,4 +1,4 @@
-    import React from 'react';
+    import React , { useRef } from 'react';
     import { makeStyles } from '@material-ui/core/styles';
     import Paper from '@material-ui/core/Paper';
     import InputBase from '@material-ui/core/InputBase';
@@ -11,35 +11,23 @@
     import MoreIcon from '@material-ui/icons/MoreVertOutlined';
     import UndoIcon from '@material-ui/icons/Undo';
     import RedoIcon from '@material-ui/icons/Redo';
-    import { Button, MenuItem } from '@material-ui/core';
+    import { Button } from '@material-ui/core';
+    import MenuList from '@material-ui/core/MenuList'
     import Menu from "@material-ui/core/Menu";
-    import menuItem from '@material-ui/core/MenuItem';
+    // import MenuItem from '@material-ui/core/MenuItem';
+    import {Popper} from '@material-ui/core';
+    // import MenuList from '@material-ui/core/MenuList';
+    import Grow from '@material-ui/core/Grow';
+    import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+    import MenuItem from '@material-ui/core/MenuItem'
 
     import '../CssFile/MainNote.css';
     import { handleNoteTitle, handleTakeNote} from '../components/CreateNote'
+
     
 
     const PinIcon = require('../components/Assets/pin.png')
     const UnPinIcon = require('../components/Assets/UnPinIcon.svg')
-    const MoreOption = [
-        'Delete note',
-        'Add label',
-        'Add drawing',
-        'Make a copy',
-        'show checkboxes',
-        'copy to Google Docs',
-    ];
-    const[possitionOfMenu,setPossitionOfMenu] = React.useState(null);
-    const[menuOpen] = Boolean(possitionOfMenu)
-    const MenuHeight = 48;
-
-    const handleMenuOpen = evt => {
-        setPossitionOfMenu(evt.currentTarget);
-    }
-
-    const handleMenuClose = () => {
-        setPossitionOfMenu(null)
-    }
 
     const useStyles = makeStyles(theme => ({
     
@@ -91,23 +79,39 @@
 
 
     function CustomizedInputBase (props) {   
-    const classes = useStyles();
+
+        const [ moreOpen , setMoreOpen ] = React.useState(false)
+        const moreRef = React.useRef();
+        const classes = useStyles();
+        const [ pinIcon , unPinIcon ] = React.useState(true);
+        
+        const handlePinChange = () => {
+            unPinIcon(false)
+        } 
+        // const 
+        const handleImage =()=> {
+            alert("Hey....")
+        }
 
     return (
-        <Paper component = "form" className = {classes.root1}>
+        <Paper component = "div" className = {classes.root1}>
             <div>
 
-            <Paper component = "form" className = {classes.root2}>
+            <Paper component = "div" className = {classes.root2}>
                 <InputBase
                     className = {classes.input}
                     placeholder = "Title "
                     value = { props.NoteTitle }
                     onChange = { props.handleNoteTitle }
                 />
-                <img src = {PinIcon} alt = "Logo" className = {classes.pinIcon}/>
+                <img src = {PinIcon} 
+                    alt = "Logo" 
+                    className = {classes.pinIcon}
+                    onClick = {handleImage}
+                    />
             </Paper>
 
-            <Paper component = "form" className = {classes.root2}>
+            <Paper component = "div" className = {classes.root2}>
                 <InputBase
                     className = {classes.input}
                     placeholder = "Take a note..."
@@ -118,76 +122,56 @@
                 />
             </Paper>
 
-            <Paper component = "form" className = {classes.root2}>
+            <Paper component = "div" className = {classes.root2}>
 
-                <IconButton type = "submit" 
+                <IconButton 
                     className = {classes.iconButton} 
                     aria-label = "search" >
                         <RemindMeIcon />  
                 </IconButton>
 
-                <IconButton type = "submit" 
+                <IconButton 
                     className = {classes.iconButton} 
                     aria-label = "search" >
                         <CollaboraterIcon/>
                 </IconButton>
 
-                <IconButton type = "submit" 
+                <IconButton 
                     className = {classes.iconButton} 
                     aria-label = "search">
                         <ChangeColorIcon />  
                 </IconButton>
 
-                <IconButton type = "submit" 
+                <IconButton 
                     className = {classes.iconButton} 
                     aria-label = "search">
                         <AddImageIcon />  
                 </IconButton>
 
-                <IconButton type = "submit" 
+                <IconButton 
                     className = {classes.iconButton} 
                     aria-label = "search">
                         <ArchiveIcon />  
                 </IconButton>
 
-                <IconButton type = "submit" 
-                    className = {classes.iconButton} 
+                <IconButton 
+                    className = { classes.iconButton } 
                     aria-label = "search"
-                    onClick = {handleMenuOpen}
+                    ref = {moreRef}
                     >
-                        <MoreIcon /> 
-                            <Menu
-                                id = "log-menu"
-                                anchorEl = {possitionOfMenu}
-                                keppMounted
-                                open = {menuOpen}
-                                onClose = {handleMenuClose}
-                                PaperProps = {{
-                                    style : {
-                                        maxHeight = MenuHeight * 10,
-                                        width = 180
-                                    },
-                                }}
-                                >
-                                    {MoreOption.map(option => (
-                                      <MenuItem 
-                                        key = {option} 
-                                        selected = { option === 'Pyxis' 
-                                        onClick = {handleMenuClose} >
-                                            {MoreOption}
-                                      </MenuItem>  
-                                    ))}
-                                
-                                </Menu> 
+                        <MoreIcon
+                            onClick = {()=>setMoreOpen(!moreOpen)} 
+                        /> 
+                        
                 </IconButton>
 
-                <IconButton type = "submit" 
+                <IconButton 
                     className = {classes.iconButton} 
                     aria-label = "search">
                         <UndoIcon />  
                 </IconButton>
 
-                <IconButton type = "submit" 
+                <IconButton 
                     className = {classes.iconButton} 
                     aria-label = "search">
                         <RedoIcon />  
@@ -196,6 +180,32 @@
                 < Button onClick = { props.handleClickAway } > Close </Button>
             </Paper>
             </div>
+            <Popper
+                style = {{ width : '15%', 
+                    paddingLeft : '5px', color : 'yellow', 
+                    backgroundColor : '#fff', zIndex : '1' 
+                }}
+                open = {moreOpen}
+                anchorEl = {moreRef.current}
+                role = {undefined} transition disablePortal
+                >
+                    <Paper >
+                        <ClickAwayListener onClickAway = { props.handleClickAway}>
+                            <MenuList>
+                                <MenuItem onClick = { props.handleClickAway}> 
+                                    Add label 
+                                </MenuItem>
+                                <MenuItem onClick = { props.handleClickAway}> 
+                                    Add drawing 
+                                </MenuItem>
+                                <MenuItem onClick = { props.handleClickAway}> 
+                                    Show checkboxes
+                                </MenuItem>
+                            </MenuList> 
+                        </ClickAwayListener>
+                        
+                    </Paper>
+            </Popper>
         </Paper>
         
     );

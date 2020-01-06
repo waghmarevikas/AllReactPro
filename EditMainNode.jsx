@@ -17,6 +17,11 @@ import MoreIcon from '@material-ui/icons/MoreVertOutlined';
 import UndoIcon from '@material-ui/icons/Undo';
 import RedoIcon from '@material-ui/icons/Redo';
 import { createUserNote, getNotes, updateUserNote } from './FirebaseServices';
+import { Popper ,Paper } from '@material-ui/core';
+import MenuList from '@material-ui/core/MenuList';
+import MenuItem from '@material-ui/core/MenuItem';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+
 
 const PinIcon = require('../components/Assets/pin.png')
 const UnPinIcon = require('../components/Assets/UnPinIcon.svg')
@@ -26,9 +31,10 @@ class EditMainNode extends Component {
         super(props)
         this.state = {
             title : this.props.Title,
-            data : this.props.Data
+            data : this.props.Data,
+            moreOpenEdit : false,
         };
-        
+        this.moreEditRef = React.createRef();
     }
 
     handleTitleChange = evt =>{
@@ -48,6 +54,7 @@ class EditMainNode extends Component {
         })
      
     }
+
     updateNotesData = () => {
         var obj = {
             titleOfNote : this.state.title,
@@ -58,6 +65,19 @@ class EditMainNode extends Component {
         updateUserNote(obj,this.props.Nkey)
        this.props.closeDialogBox() 
     }
+
+    handleMenuOpen = () => {
+        this.setState({
+            moreOpenEdit: true,
+        })
+    }
+
+    handleMenuClose = () => {
+        this.setState({
+            moreOpenEdit : false
+        })
+    }
+
     
     render()
     {
@@ -75,7 +95,6 @@ class EditMainNode extends Component {
                             <DialogContentText>
                             <div className = "pinIcon">
                                 <InputBase
-                                    // className = {classes.input}
                                     placeholder = "Title "
                                     // defaultValue={this.props.NotesData.titleOfNote}
                                     value = { this.state.title }
@@ -92,35 +111,39 @@ class EditMainNode extends Component {
                                 />  
                             </div>
                             <div>
-                                <IconButton type = "submit" >
+                                <IconButton  >
                                         <RemindMeIcon />  
                                 </IconButton>
 
-                                <IconButton type = "submit" >
+                                <IconButton  >
                                         <CollaboraterIcon/>
                                 </IconButton>
 
-                                <IconButton type = "submit" >
+                                <IconButton  >
                                         <ChangeColorIcon />  
                                 </IconButton>
 
-                                <IconButton type = "submit" >
+                                <IconButton  >
                                         <AddImageIcon />  
                                 </IconButton>
 
-                                <IconButton type = "submit" >
+                                <IconButton  >
                                         <ArchiveIcon />  
                                 </IconButton>
 
-                                <IconButton type = "submit">
-                                        <MoreIcon />  
+                                <IconButton
+                                    ref = {this.moreEditRef}
+                                     >
+                                        <MoreIcon 
+                                            onClick = {this.handleMenuOpen}
+                                        />  
                                 </IconButton>
 
-                                <IconButton type = "submit" >
+                                <IconButton  >
                                         <UndoIcon />  
                                 </IconButton>
 
-                                <IconButton type = "submit" >
+                                <IconButton  >
                                         <RedoIcon />  
                                 </IconButton>
                             </div>
@@ -130,16 +153,54 @@ class EditMainNode extends Component {
                         </DialogContent>
 
                             <DialogActions >
-                            <Button 
-                                // onClick = {this.handleNoteClose}
-                                onClick = {this.props.closeDialogBox}
-                                color = "primary" autoFocus 
-                                // onClose = {this.React}
-                                >
-                                Close
-                            </Button>
+                                <Button 
+                                    // onClick = {this.handleNoteClose}
+                                    onClick = {this.updateNotesData}
+                                    color = "primary" autoFocus 
+                                    // onClose = {this.React}
+                                    >
+                                    Close
+                                </Button>
+                                
                             </DialogActions>
+                            <Popper
+                                    style = {{ width : '15%', 
+                                        paddingLeft : '5px', color : 'yellow', 
+                                        backgroundColor : '#fff', zIndex : '1' 
+                                    }}
+                                    open = {this.state.moreOpenEdit}
+                                    anchorEl = {this.moreEditRef.current}
+                                    role = {undefined} transition disablePortal
+                                    >
+                                    <Paper >
+                                        <ClickAwayListener onClickAway = {this.handleMenuClose} >
+                                            <MenuList>
+                                                <MenuItem onClick = { this.handleMenuClose }> 
+                                                    Delete note
+                                                </MenuItem>
+                                                <MenuItem onClick = { this.handleMenuClose }> 
+                                                    Add label 
+                                                </MenuItem>
+                                                <MenuItem onClick = { this.handleMenuClose }> 
+                                                    Add drawing 
+                                                </MenuItem>
+                                                <MenuItem onClick = { this.handleMenuClose }> 
+                                                    Make a copy
+                                                </MenuItem>
+                                                <MenuItem onClick = { this.handleMenuClose }> 
+                                                    Show checkboxes
+                                                </MenuItem>
+                                                <MenuItem onClick = { this.handleMenuClose }> 
+                                                    Copy to Google Docs
+                                                </MenuItem>
+                                            </MenuList>
+                                        </ClickAwayListener>
+                                    </Paper>
+                            </Popper>
+                           
                 </Dialog>
+                    
+                
             </div>
         )
     }
